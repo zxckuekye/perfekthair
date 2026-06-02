@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Галерея | PERFEKT HAIR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header class="site-header">
+      <a class="brand" href="index.html">PERFEKT HAIR</a>
+      <button class="nav-toggle" type="button" aria-label="Открыть меню"><span></span><span></span></button>
+      <nav class="main-nav"><a href="services.html">Услуги</a><a href="gallery.html" aria-current="page">Работы</a><a href="booking.html">Запись</a><a href="contacts.html">Контакты</a></nav>
+    </header>
+    <main>
+      <section class="page-hero compact">
+        <p class="eyebrow">portfolio</p>
+        <h1>Галерея работ</h1>
+        <p>Фильтры, masonry-сетка и открытие фото в модальном окне.</p>
+      </section>
+      <section class="section">
+        <div class="filter-bar reveal" data-filters>
+          <button class="active" type="button" data-filter="all">Все</button>
+          <button type="button" data-filter="keratin">Кератин</button>
+          <button type="button" data-filter="botox">Ботокс</button>
+          <button type="button" data-filter="repair">Восстановление</button>
+        </div>
+        <div class="masonry full-masonry" data-gallery>
+          <button class="gallery-item tall reveal" data-category="keratin" data-title="Кератин | холодный блонд">
+            <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=900&q=85" alt="Кератин после процедуры" loading="lazy" />
+          </button>
+          <button class="gallery-item reveal" data-category="botox" data-title="Ботокс | блеск по длине">
+            <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=900&q=85" alt="Ботокс волос результат" loading="lazy" />
+          </button>
+          <button class="gallery-item wide reveal" data-category="repair" data-title="Восстановление | мягкая длина">
+            <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1000&q=85" alt="Восстановление волос" loading="lazy" />
+          </button>
+          <button class="gallery-item reveal" data-category="keratin" data-title="Кератин | разглаживание">
+            <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=900&q=85" alt="Гладкие волосы" loading="lazy" />
+          </button>
+          <button class="gallery-item tall reveal" data-category="repair" data-title="Уход | сияние">
+            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=85" alt="Уход за волосами" loading="lazy" />
+          </button>
+          <button class="gallery-item reveal" data-category="botox" data-title="Ботокс | плотность">
+            <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=85" alt="Блестящие волосы" loading="lazy" />
+          </button>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>PERFEKT HAIR</strong><span>Healthy • Glossy • Luxury Hair</span></div><div class="footer-links"><a href="https://www.instagram.com/_perfekt_hair_?igsh=MXhueTNoc2owMmx6ag==" target="_blank" rel="noreferrer">Instagram</a><a href="contacts.html">Контакты</a></div></footer>
+    <div class="modal" data-modal aria-hidden="true"><button class="modal-close" type="button" data-modal-close aria-label="Закрыть">×</button><img src="" alt="" data-modal-img /><p data-modal-title></p></div>
+    <script src="script.js"></script>
+  </body>
+</html>

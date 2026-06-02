@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Архив наблюдателя</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#0a0a0c;
+    --bg2:#131016;
+    --card:#1a1720;
+    --border:#2c2836;
+    --text:#d9d0c7;
+    --accent:#8a7662;
+    --accent-glow:#b89f7e;
+    --orbit:#2a2533;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+    background: radial-gradient(circle at 30% 20%, rgba(138,118,98,0.08), transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(138,118,98,0.05), transparent 60%),
+                var(--bg);
+    overflow-x:hidden;
+    min-height:100vh;
+}
+
+/* ЗАГРУЗКА */
+#loader{
+    position:fixed;
+    inset:0;
+    background:#0a0a0c;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+    transition:opacity 0.6s ease;
+}
+#loader-text{
+    font-family:'Courier New', monospace;
+    font-size:1.2rem;
+    line-height:2;
+    color:#c7b9aa;
+    text-align:center;
+    border-left:3px solid var(--accent);
+    padding-left:20px;
+}
+
+/* ПОМЕХИ */
+.noise{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:99;
+    background-image: repeating-radial-gradient(circle at center, transparent 0, transparent 2px, rgba(255,255,255,.02) 3px);
+    animation:flicker .15s infinite;
+    opacity:0.3;
+}
+
+@keyframes flicker{
+    0%{opacity:0.25;}
+    50%{opacity:0.1;}
+    100%{opacity:0.25;}
+}
+
+/* NAV */
+nav{
+    position:sticky;
+    top:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:rgba(10,10,12,.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    z-index:100;
+}
+.logo{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.2rem;
+    letter-spacing:2px;
+    color:#cbb59b;
+    cursor:pointer;
+    transition:0.2s;
+}
+.logo:hover{
+    text-shadow:0 0 8px var(--accent-glow);
+}
+nav ul{
+    display:flex;
+    gap:30px;
+    list-style:none;
+}
+nav a{
+    text-decoration:none;
+    color:var(--text);
+    font-weight:500;
+    transition:0.3s;
+    padding:5px 0;
+    border-bottom:1px solid transparent;
+}
+nav a:hover{
+    color:#fff;
+    border-bottom-color:var(--accent);
+}
+
+/* HERO */
+.hero{
+    min-height:80vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:60px 20px;
+}
+.hero h1{
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(2.5rem,7vw,5rem);
+    color:#d3c2ae;
+    margin-bottom:20px;
+    letter-spacing:4px;
+}
+.hero p{
+    max-width:700px;
+    line-height:1.8;
+    opacity:.85;
+    margin-bottom:35px;
+}
+.hero-stats{
+    display:flex;
+    gap:30px;
+    margin:30px 0;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.stat{
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--border);
+    padding:15px 25px;
+    border-radius:15px;
+    min-width:150px;
+}
+
+.stat span{
+    display:block;
+    font-size:1.5rem;
+    color:#ccb79c;
+    font-family:'Orbitron';
+    margin-bottom:5px;
+}
+.hero button{
+    padding:14px 38px;
+    background:var(--accent);
+    color:white;
+    border:none;
+    border-radius:30px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+.hero button:hover{
+    transform:translateY(-3px);
+    background:#9e8872;
+    box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+#typewriter{
+    min-height:3rem;
+    font-family:'Orbitron',monospace;
+    font-size:1.3rem;
+    letter-spacing:3px;
+    color:#b9a27b;
+    margin-bottom:20px;
+}
+
+section{
+    width:min(1200px,90%);
+    margin:auto;
+    padding:70px 0;
+}
+section h2{
+    font-family:'Orbitron',sans-serif;
+    margin-bottom:40px;
+    color:#ccb79c;
+    font-size:1.9rem;
+    border-left:4px solid var(--accent);
+    padding-left:18px;
+}
+
+/* КАРТОЧКИ ДЕЛ */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    transition:0.25s ease;
+    backdrop-filter:blur(2px);
+}
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#8a7662;
+    box-shadow:0 15px 25px -12px rgba(0,0,0,0.5);
+}
+.card-img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+    filter:grayscale(80%) contrast(115%);
+    transition:0.4s;
+}
+.card:hover .card-img{
+    filter:grayscale(40%) contrast(120%);
+}
+.card-content{
+    padding:20px;
+}
+.card-content h3{
+    margin-bottom:12px;
+    font-size:1.3rem;
+    letter-spacing:1px;
+    color:#ccb79c;
+}
+.card-content p{
+    line-height:1.5;
+    opacity:0.85;
+    margin-bottom:15px;
+}
+.status{
+    display:inline-block;
+    padding:6px 12px;
+    border:1px solid #8a7662;
+    font-size:.75rem;
+    border-radius:20px;
+    background:#2a241f;
+}
+
+/* ========= КРУГОВОЙ АРХИВ ========= */
+.orbit-archive{
+    background: radial-gradient(circle at center, rgba(20,18,25,0.6) 0%, rgba(10,10,12,0.95) 100%);
+    border-radius:50px;
+    padding:40px 20px;
+    margin:30px 0;
+    border:1px solid var(--border);
+}
+
+.orbit-container{
+    position:relative;
+    width:100%;
+    max-width:700px;
+    height:auto;
+    aspect-ratio:1/1;
+    margin:0 auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.orbit-container{
+    animation: rotateOrbit 120s linear infinite;
+}
+
+@keyframes rotateOrbit{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* центральное кольцо */
+.orbit-ring{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    border:2px dashed var(--orbit);
+    box-shadow:0 0 20px rgba(138,118,98,0.2);
+}
+
+/* центральный элемент (открытый файл) */
+.center-core{
+    position:absolute;
+    width:220px;
+    height:220px;
+    background:var(--card);
+    border-radius:50%;
+    border:2px solid var(--accent);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    z-index:10;
+    backdrop-filter:blur(8px);
+    box-shadow:0 0 30px rgba(138,118,98,0.4);
+    transition:0.3s;
+    cursor:pointer;
+    padding:15px;
+}
+.center-core:hover{
+    transform:scale(1.02);
+    box-shadow:0 0 40px rgba(138,118,98,0.6);
+}
+.center-icon{
+    font-size:2.5rem;
+    margin-bottom:8px;
+}
+.center-title{
+    font-family:'Orbitron',sans-serif;
+    font-size:0.85rem;
+    font-weight:bold;
+    color:var(--accent-glow);
+}
+.center-desc{
+    font-size:0.7rem;
+    margin-top:6px;
+    opacity:0.8;
+}
+
+/* орбитальные объекты */
+.orbit-item{
+    position:absolute;
+    width:75px;
+    height:75px;
+    background:var(--card);
+    border-radius:50%;
+    border:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:0.2s;
+    backdrop-filter:blur(4px);
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    z-index:15;
+}
+.orbit-item:hover{
+    transform:scale(1.15);
+    border-color:var(--accent);
+    box-shadow:0 0 20px rgba(138,118,98,0.5);
+    background:#2a2430;
+}
+.orbit-icon{
+    font-size:1.5rem;
+}
+.orbit-label{
+    font-size:0.6rem;
+    margin-top:4px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+.orbit-number{
+    font-size:0.55rem;
+    opacity:0.7;
+}
+
+.core-detail{
+    font-size:0.65rem;
+    margin-top:8px;
+    color:#bba98c;
+    max-width:130px;
+    line-height:1.3;
+}
+
+/* случайная находка */
+.random-file{
+    background:var(--card);
+    border:1px solid var(--border);
+    padding:40px 30px;
+    border-radius:20px;
+    text-align:center;
+}
+.random-file h3{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.6rem;
+    color:#d6c09e;
+}
+
+footer{
+    margin-top:60px;
+    text-align:center;
+    padding:40px;
+    border-top:1px solid var(--border);
+    opacity:.7;
+}
+.footer-links{
+    margin-top:15px;
+}
+
+.footer-links a{
+    color:#bba98c;
+    text-decoration:none;
+    transition:.3s;
+    border-bottom:1px solid transparent;
+}
+
+.footer-links a:hover{
+    color:#d6c09e;
+    border-bottom:1px solid #8a7662;
+    text-shadow:0 0 8px rgba(184,159,126,.4);
+}
+
+@media(max-width:768px){
+    nav{
+        flex-direction:column;
+        gap:12px;
+    }
+    .orbit-item{
+        width:55px;
+        height:55px;
+    }
+    .orbit-icon{
+        font-size:1.2rem;
+    }
+    .center-core{
+        width:120px;
+        height:120px;
+    }
+    .cards{
+        grid-template-columns:1fr;
+    }
+    .scroll-indicator{
+    position:absolute;
+    bottom:30px;
+    font-size:2rem;
+    opacity:.6;
+    animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(10px);
+    }
+}
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+    <div id="loader-text"></div>
+</div>
+<div class="noise"></div>
+
+<nav>
+    <div class="logo" id="secretLogo">⌬ АРХИВ НАБЛЮДАТЕЛЯ</div>
+    <ul>
+        <li><a href="#" id="navHome">Главная</a></li>
+        <li><a href="#cases">Дела</a></li>
+        <li><a href="#orbitArchive">Архив</a></li>
+        <li><a href="#random">Находка</a></li>
+    </ul>
+</nav>
+
+<header class="hero">
+    <h1>АРХИВ НАБЛЮДАТЕЛЯ</h1>
+    <div id="typewriter"></div>
+    <p>Все материалы собраны из закрытых источников.<br>Некоторые из них не должны были попасть сюда.</p>
+    <div class="system-status">
+    ● Система активна • 8 архивных единиц обнаружено
+</div>
+<div class="hero-stats">
+
+    <div class="stat">
+        <span>08</span>
+        Архивных единиц
+    </div>
+
+    <div class="stat">
+        <span>03</span>
+        Аномалии
+    </div>
+
+    <div class="stat">
+        <span>ALPHA</span>
+        Уровень доступа
+    </div>
+
+</div>
+    <button id="enterArchiveBtn">ИССЛЕДОВАТЬ ПАПКИ</button>
+</header>
+
+<!-- КАРТОЧКИ ДЕЛ - ВЕРНУЛИ! -->
+<section id="cases">
+    <h2>📁 Последние дела</h2>
+    <div class="cards">
+        <div class="card">
+            <img class="card-img" src="https://i.pinimg.com/1200x/bd/7b/06/bd7b0687570498d9002383195a493edc.jpg" alt="радиостанция">
+            <div class="card-content">
+                <h3>Дело №001 — Исчезновение радиосигнала</h3>
+                <p>Последний сигнал получен 17 ноября в 03:14. Расшифровка обрывается на странной частоте 66.6 FM.</p>
+                <span class="status">СТАТУС: НЕ ЗАКРЫТО</span>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img" src="https://i.pinimg.com/1200x/80/f7/2a/80f72ad3e75c8b4d21cb22b965d4bd90.jpg" alt="старая кассета">
+            <div class="card-content">
+                <h3>Дело №002 — Запись 1998 года</h3>
+                <p>Неизвестная запись, найденная на кассете. Голос принадлежит неопознанному лицу, язык не идентифицирован.</p>
+                <span class="status">СТАТУС: РАССЛЕДУЕТСЯ</span>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img" src="https://i.pinimg.com/1200x/4b/88/64/4b8864c9a29ac5ae50a5ec8bb0d9ecb9.jpg" alt="лесополоса">
+            <div class="card-content">
+                <h3>Дело №003 — Объект в лесополосе</h3>
+                <p>Странный объект замечен в лесополосе. Три свидетеля описывают схожие детали: свечение и гул.</p>
+                <span class="status">СТАТУС: АКТИВНО</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- КРУГОВОЙ АРХИВ -->
+<section id="orbitArchive">
+    <h2>🌀 Архив материалов</h2>
+    <div class="orbit-archive">
+        <div class="orbit-container" id="orbitContainer">
+            <div class="orbit-ring"></div>
+            <div class="center-core" id="centerCore">
+                <div class="center-icon">📀</div>
+                <div class="center-title">АРХИВ</div>
+                <div class="center-desc">нажми на файл</div>
+            </div>
+        </div>
+        <p style="text-align:center; margin-top:25px; opacity:0.7; font-size:0.85rem;">✦ архивные единицы — кликните, чтобы открыть ✦</p>
+    </div>
+</section>
+
+<section id="random">
+    <h2>🎲 Случайная находка</h2>
+    <div class="random-file">
+        <h3 id="randomTitle"></h3>
+        <p>Некоторые материалы были скрыты десятилетиями. Данный файл выгружен из сектора Z.</p>
+        <button id="refreshRandomBtn" style="margin-top:20px; background:#463c34; border:none; padding:8px 20px; border-radius:30px; color:white; cursor:pointer;">⟳ Другая находка</button>
+    </div>
+</section>
+<div class="scroll-indicator">
+    ↓
+</div>
+<footer>
+    <p>Доступ разрешён. Уровень допуска — альфа.</p>
+
+    <p>
+        © Архив наблюдателя • все записи верифицированы
+    </p>
+
+   <div class="footer-links">
+    <a href="https://t.me/newsbrek" target="_blank">
+        ⌬ Передача данных в Telegram
+    </a>
+</div>
+</footer>
+
+<script>
+/* ========= ЗАГРУЗКА ========= */
+const loadingLines = [
+    "[>] Подключение к архиву...",
+    "[>] Калибровка орбиты...",
+    "[>] Загрузка планетарных данных...",
+    "[✓] Доступ разрешён."
+];
+let lineIdx = 0;
+const loaderTextDiv = document.getElementById("loader-text");
+
+function runLoader(){
+    if(lineIdx < loadingLines.length){
+        loaderTextDiv.innerHTML += loadingLines[lineIdx] + "<br>";
+        lineIdx++;
+        setTimeout(runLoader, 520);
+    } else {
+        setTimeout(()=>{
+            const loader = document.getElementById("loader");
+            loader.style.opacity = "0";
+            setTimeout(()=>{ loader.style.display = "none"; }, 500);
+        }, 800);
+    }
+}
+runLoader();
+
+/* ========= ПЕЧАТАЮЩАЯСЯ СТРОКА ========= */
+const mainTitle = "// ДОСТУП К ОРБИТАЛЬНОМУ АРХИВУ";
+let charIndex = 0;
+const typewriterEl = document.getElementById("typewriter");
+function typeEffect() {
+    if (charIndex < mainTitle.length) {
+        typewriterEl.innerHTML += mainTitle.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeEffect, 70);
+    }
+}
+typeEffect();
+
+/* ========= ДАННЫЕ ДЛЯ КРУГОВОГО АРХИВА ========= */
+const archivePlanets = [
+    { id: "№004", name: "Запись №42", desc: "Эхо пустоты", icon: "📻", details: "Аудиофайл 1987 года. Содержит повторяющийся сигнал неизвестного происхождения." },
+    { id: "№005", name: "Фантом", desc: "Фото без даты", icon: "📷", details: "Снимок, сделанный в заброшенной лаборатории. На заднем плане — силуэт." },
+    { id: "№006", name: "Дело №011", desc: "Допрос", icon: "📜", details: "Стенограмма допроса свидетеля. Упоминается 'зеленое сияние'." },
+    { id: "№007", name: "Сигнал", desc: "Частота 87.4", icon: "📡", details: "Радиосигнал, пойманный на старой антенне. Длится ровно 17 секунд." },
+    { id: "№008", name: "Дневник", desc: "Сталкер", icon: "📓", details: "Личный дневник, найденный в лесополосе. Последние страницы вырваны." },
+    { id: "№009", name: "Отчёт 04-К", desc: "Засекречено", icon: "🔒", details: "Документ с грифом 'особой важности'. Упоминается 'объект-К'." },
+    { id: "№010", name: "Карта", desc: "Звёздная аномалия", icon: "🗺️", details: "Аномальная карта звездного неба с неопознанными координатами." },
+    { id: "№011", name: "Голос", desc: "Из коллектора", icon: "🎙️", details: "Запись голоса, найденная в дренажной системе. Язык не идентифицирован." }
+];
+
+const orbitContainer = document.getElementById("orbitContainer");
+const centerCore = document.getElementById("centerCore");
+let orbitItems = [];
+
+function calculatePositions(container, radiusPercent, itemsCount) {
+    const rect = container.getBoundingClientRect();
+    const containerWidth = rect.width;
+    const containerHeight = rect.height;
+    const radius = (containerWidth * radiusPercent) / 100;
+    const centerX = containerWidth / 2;
+    const centerY = containerHeight / 2;
+    
+    const positions = [];
+    for(let i = 0; i < itemsCount; i++){
+        const angle = (i / itemsCount) * Math.PI * 2;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        positions.push({ x, y, angle });
+    }
+    return { positions, centerX, centerY, radius };
+}
+
+function createOrbitItems(planetsData) {
+    const existingItems = document.querySelectorAll('.orbit-item');
+    existingItems.forEach(item => item.remove());
+    
+    const container = orbitContainer;
+    const count = planetsData.length;
+    const { positions } = calculatePositions(container, 42, count);
+    
+    planetsData.forEach((planet, idx) => {
+        const item = document.createElement('div');
+        item.className = 'orbit-item';
+        item.setAttribute('data-id', planet.id);
+        item.setAttribute('data-name', planet.name);
+        item.setAttribute('data-desc', planet.desc);
+        item.setAttribute('data-icon', planet.icon);
+        item.setAttribute('data-details', planet.details);
+        
+        item.style.position = 'absolute';
+        item.style.left = `${positions[idx].x - 37.5}px`;
+        item.style.top = `${positions[idx].y - 37.5}px`;
+        
+        item.innerHTML = `
+            <div class="orbit-icon">${planet.icon}</div>
+            <div class="orbit-label">${planet.name}</div>
+            <div class="orbit-number">${planet.id}</div>
+        `;
+        
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            centerCore.innerHTML = `
+                <div class="center-icon">${planet.icon}</div>
+                <div class="center-title">${planet.name}</div>
+                <div class="center-desc">${planet.desc}</div>
+                <div class="core-detail">${planet.details.substring(0, 70)}${planet.details.length > 70 ? '…' : ''}</div>
+            `;
+            centerCore.style.transform = 'scale(1.02)';
+            setTimeout(() => { centerCore.style.transform = ''; }, 200);
+        });
+        
+        orbitContainer.appendChild(item);
+        orbitItems.push(item);
+    });
+    
+    window.addEventListener('resize', () => {
+        const newPositions = calculatePositions(container, 42, count).positions;
+        orbitItems.forEach((item, idx) => {
+            if(idx < newPositions.length){
+                item.style.left = `${newPositions[idx].x - 37.5}px`;
+                item.style.top = `${newPositions[idx].y - 37.5}px`;
+            }
+        });
+    });
+}
+
+createOrbitItems(archivePlanets);
+
+centerCore.addEventListener('click', () => {
+    centerCore.innerHTML = `
+        <div class="center-icon">📀</div>
+        <div class="center-title">АРХИВ</div>
+        <div class="center-desc">нажми на планету</div>
+    `;
+});
+
+/* ========= СЛУЧАЙНАЯ НАХОДКА ========= */
+const randomFiles = [
+    "Запись №42 / 'Эхо пустоты'",
+    "Фотография без даты (аномалия)",
+    "Дело №011 / Допрос",
+    "Неизвестный радиосигнал 1987",
+    "Потерянный дневник сталкера",
+    "Засекреченный отчёт 04-К",
+    "Обрывок карты звёздного неба",
+    "Аудио: 'Голос из коллектора'"
+];
+
+function updateRandomTitle() {
+    const randomIndex = Math.floor(Math.random() * randomFiles.length);
+    document.getElementById("randomTitle").innerText = randomFiles[randomIndex];
+}
+updateRandomTitle();
+
+const refreshBtn = document.getElementById("refreshRandomBtn");
+if(refreshBtn){
+    refreshBtn.addEventListener("click", () => {
+        updateRandomTitle();
+        const block = document.querySelector(".random-file");
+        block.style.transform = "scale(0.98)";
+        setTimeout(()=>{ block.style.transform = "scale(1)"; }, 150);
+    });
+}
+
+/* ========= НАВИГАЦИЯ ========= */
+document.getElementById("navHome")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+document.getElementById("navCases")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("cases").scrollIntoView({ behavior: "smooth" });
+});
+document.getElementById("enterArchiveBtn")?.addEventListener("click", () => {
+    document.getElementById("orbitArchive").scrollIntoView({ behavior: "smooth" });
+});
+const orbitNavLink = document.querySelector('a[href="#orbitArchive"]');
+if(orbitNavLink){
+    orbitNavLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("orbitArchive").scrollIntoView({ behavior: "smooth" });
+    });
+}
+const randomNav = document.getElementById("navRandom");
+if(randomNav){
+    randomNav.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("random").scrollIntoView({ behavior: "smooth" });
+    });
+}
+
+/* ========= ПАСХАЛКА ========= */
+let clickCount = 0;
+const logo = document.getElementById("secretLogo");
+logo.addEventListener("click", () => {
+    clickCount++;
+    if(clickCount === 7){
+        alert("⚠️ СКРЫТЫЙ АРХИВ ОБНАРУЖЕН\n\nДело №000 разблокировано. Аномалия зафиксирована на орбите.");
+        logo.style.textShadow = "0 0 12px #b87c4a";
+        if(orbitItems.length < 9){
+            const secretPlanet = { id: "№000", name: "Забвение", desc: "Аномалия", icon: "⚠️", details: "Документ из будущего. Расшифровка невозможна." };
+            const newPlanets = [...archivePlanets, secretPlanet];
+            createOrbitItems(newPlanets);
+        }
+        clickCount = 0;
+        setTimeout(()=>{ logo.style.textShadow = "none"; }, 1000);
+    }
+});
+</script>
+</body>
+</html>
